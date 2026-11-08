@@ -7,15 +7,33 @@ export const sampleProducts = [
   { id: 2, name: 'Milk', price: '$2.50', category: 'Dairy', inStock: false }
 ]
 
-const ProductList = () => {
+// Props from App:
+//   selectedCategory - 'all', 'Fruits' or 'Dairy'
+//   onAddToCart      - function to call with a product when its button is clicked
+const ProductList = ({ selectedCategory, onAddToCart }) => {
+  // Derived data, so no extra state is needed. It is recalculated on every
+  // render: show everything for 'all', otherwise only matching categories.
+  const visibleProducts =
+    selectedCategory === 'all'
+      ? sampleProducts
+      : sampleProducts.filter((product) => product.category === selectedCategory)
+
   return (
     <div>
       <h2>Available Products</h2>
 
-      {/* TODO: Filter sample data using selected category */}
-      {sampleProducts.map((product) => (
-        <ProductCard key={product.id} product={product} />
-      ))}
+      {/* Render only the filtered products. The unique key helps React track items. */}
+      {visibleProducts.length === 0 ? (
+        <p>No products available.</p>
+      ) : (
+        visibleProducts.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            onAddToCart={onAddToCart}
+          />
+        ))
+      )}
     </div>
   )
 }
